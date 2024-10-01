@@ -1,4 +1,4 @@
-# Install Docker Engine on Debian
+# Install Docker Engine on UBUNTU SYSTEM
 
 ### Uninstall old versions
 
@@ -6,7 +6,7 @@ Before you can install Docker Engine, you need to uninstall any conflicting pack
 Run the following command to uninstall all conflicting packages:
 
 ```
-$ for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
 
 ### Installation methods
@@ -24,12 +24,12 @@ Before you install Docker Engine for the first time on a new host machine, you n
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
@@ -39,7 +39,7 @@ sudo apt-get update
    To install the latest version, run:
 
 ```
-$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 3. Verify that the installation is successful by running the hello-world image:
@@ -48,4 +48,4 @@ $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugi
 $ sudo docker run hello-world
 ```
 
-Reference- Docker Official website `https://docs.docker.com/engine/install/debian/`
+Reference- Docker Official website `https://docs.docker.com/engine/install/ubuntu/`
