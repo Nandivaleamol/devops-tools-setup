@@ -16,7 +16,7 @@ kind: ClusterConfig
 metadata:
   name: my-eks-cluster          # Cluster name
   region: ap-south-1            # AWS region
-  version: "1.28"               # Kubernetes version
+  version: "1.32"               # Kubernetes version
 
 managedNodeGroups:
   - name: managed-ng-1
@@ -40,6 +40,15 @@ eksctl create cluster -f cluster-config.yaml
 ```
 ⏳ Wait 10-15 mins (Cluster + Node Groups will be created).
 
+CloudFormation will create the necessary resources, including VPC, subnets, and security groups.
+![img_10.png](img_10.png)
+EKS Cluster Creation in AWS Console:
+![img_9.png](img_9.png)
+
+EKS Node Group Creation in AWS Console:
+![img_8.png](img_8.png)
+
+
 **1.3 Verify Cluster**
 ```bash
 eksctl get cluster --name my-eks-cluster --region ap-south-1
@@ -54,12 +63,27 @@ aws ecr create-repository --repository-name my-eks-app --region ap-south-1
 ```bash
 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com
 ```
-**2.3 Build & Push a Docker Image**
-``` bash
+**2.3 Build & Push a Docker Image**  
+**(NOTE:- Docker engine must be installed and running on eks client machine)**
+Create a simple Dockerfile for your app (e.g., NGINX):
+```Dockerfile
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
+EXPOSE 80
+```
+Build and push the Docker image to ECR:
+```bash
 docker build -t my-eks-app .
 docker tag my-eks-app:latest <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/my-eks-app:latest
 docker push <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/my-eks-app:latest
 ```
+**2.4 Verify Image in ECR**
+```bash
+aws ecr describe-repositories --repository-names my-eks-app --region ap-south-1
+```
+**ECR repositories on AWS Console**
+![img_11.png](img_11.png)
+
 ### 🔹 Step 3: Deploy App to EKS
 **3.1 Create deployment.yaml**
 ```yaml
@@ -123,6 +147,7 @@ Open the LoadBalancer URL in your browser to access the deployed application.
 ```
 curl http://<LOADBALANCER-URL>:<APP_PORT>
 ```
+![img_12.png](img_12.png)
 ### 🔹 Step 4: Clean Up (Avoid AWS Charges)
 ```bash
 # Delete the app
